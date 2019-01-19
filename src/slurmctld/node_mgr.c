@@ -2664,6 +2664,13 @@ extern int validate_node_specs(slurm_node_registration_status_msg_t *reg_msg,
 	    IS_NODE_POWER_UP(node_ptr) ||
 	    IS_NODE_POWER_SAVE(node_ptr)) {
 		info("Node %s now responding", node_ptr->name);
+		if (IS_NODE_CLOUD(node_ptr) &&
+		    xstrcasestr(slurmctld_conf.slurmctld_params,
+				"cloud_dns")) {
+			slurm_reset_alias(node_ptr->name,
+					  node_ptr->comm_name,
+					  NULL);
+		}
 
 		/*
 		 * Set last_idle in case that the node came up out of band or
